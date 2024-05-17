@@ -1,0 +1,32 @@
+volumes:
+  app-postgres-data:
+    driver: local
+
+services:
+  api:
+    user: 1000:1000
+    container_name: personal-api
+    image: webdevops/php-nginx:8.3-alpine
+    volumes:
+      - ./project:/app
+    working_dir: /app
+    ports:
+      - 81:80
+    environment:
+      - WEB_DOCUMENT_ROOT=/app/public
+      - PHP_MEMORY_LIMIT=256M
+      - php.opcache.enable_cli=1
+
+  postgres:
+    container_name: personal-postgres
+    image: postgres:16-alpine
+    environment:
+      POSTGRES_USER: postgres
+      POSTGRES_PASSWORD: laraveldocker
+      POSTGRES_DB: app_dev
+    volumes:
+      - app-postgres-data:/var/lib/postgresql/data
+    ports:
+      - 5432:5432
+
+
